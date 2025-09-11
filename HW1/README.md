@@ -1,6 +1,62 @@
 # My Daily KakaoTalk Briefing Bot
 
-매일 아침 10시 45분에 날씨, 금융 정보, 기술 뉴스를 카카오톡 "나에게 보내기" API를 통해 전송하는 자동화 봇입니다.
+매일 아침 출근 준비 시간에 스마트폰으로 날씨 앱, 주식 앱, 뉴스 앱을 번갈아 확인하는 반복적인 작업을 자동화하기 위해 기획되었습니다. 사용자가 지정한 지역의 날씨 정보, 관심 있는 주식/암호화폐의 현재 시세 및 등락률, 그리고 주요 IT 기술 뉴스 사이트의 헤드라인을 자동으로 수집합니다. 수집된 정보는 하나의 요약 메시지로 정리되어, 매일 정해진 시간에 카카오톡 "나에게 보내기" API를 통해 사용자에게 전송됩니다. 이 프로젝트는 Python을 기반으로 하며, 다양한 외부 API를 연동하고 백그라운드 스케줄링을 구현하는 경험을 목표로 합니다.
+
+## 📝 프로젝트 기획 배경 (Project Idea)
+
+이 프로젝트는 '만들면 편하겠다'고 생각하지만 막상 직접 코딩하기 번거로워 미루게 되는 대표적인 아이디어에서 출발했습니다. 매일 아침 반복적으로 확인하는 날씨, 주식/코인 시세, IT 뉴스 헤드라인을 하나의 메시지로 취합하여 자동으로 발송하는 봇을 구현함으로써, 개인의 일상 속 비효율을 자동화하는 경험을 제공하고자 했습니다. 특히 API 연동과 스케줄링, 인증 처리는 LLM의 도움을 받을 때 가장 효율적으로 개발할 수 있는 영역이기도 합니다.
+
+이 프로젝트는 Cursor(Gemini CLI)와 같은 LLM 기반 코딩 어시스턴트를 활용하여 개발되었습니다. 아래는 개발 과정에서 사용된 주요 프롬프트 목록입니다.
+
+### 프로젝트 초기 설정
+
+> Initialize a new Python project for a KakaoTalk messaging service. Create a requirements.txt file and add requests, python-dotenv, apscheduler, yfinance, and beautifulsoup4. Also, create a main script kakao_briefing_bot.py, a utility script get_kakao_token.py, and an environment file .env.
+
+### 환경 변수 파일(.env) 설정
+
+> I need to set up the .env file to store my API keys. Please add the following keys with placeholder values: KAKAO_REST_API_KEY, KAKAO_REDIRECT_URI, and OPENWEATHER_API_KEY.
+
+### 카카오 인증 토큰 최초 발급 스크립트 작성
+
+> In get_kakao_token.py, write a script that does two things. First, it should print a Kakao authorization URL using the KAKAO_REST_API_KEY and KAKAO_REDIRECT_URI from the .env file. Second, it should prompt the user to paste the authorization code from the redirected URL. Once the code is entered, the script must exchange it for an access token and a refresh token by making a POST request to kauth.kakao.com. Finally, it should save these tokens into a new file named kakao_token.json.
+
+### 카카오 토큰 관리 및 메시지 발송 모듈 구현
+
+> Now, let's create a class or a set of functions in kakao_briefing_bot.py to handle Kakao API interactions.
+> 
+> A function load_tokens() to read the tokens from kakao_token.json.
+> 
+> A function refresh_tokens(refresh_token) that uses the refresh token to get a new access token from Kakao's auth server and updates kakao_token.json.
+> 
+> A main function send_kakao_message(text) that: a. Loads the tokens. b. Checks if the access token needs refreshing. If so, it calls refresh_tokens. c. Sends the provided text to me using the Kakao Talk "Send to Me" API (/v2/api/talk/memo/default/send). It should format the request correctly as a text template object.
+
+### 날씨 정보 기능 구현
+
+> In kakao_briefing_bot.py, write a Python function called get_weather_info. It should take a city name (e.g., "Yongin") as an argument, fetch the current weather from the OpenWeatherMap API using the requests library and my OPENWEATHER_API_KEY, and return it as a formatted string.
+
+### 금융 정보 기능 구현
+
+> Next, create a function get_financial_info. This function should use the yfinance library to get the current price and percentage change for key tickers like the KOSPI index (^KS11) and Bitcoin (BTC-USD). It should return a formatted string summarizing this information.
+
+### 뉴스 헤드라인 스크래핑 기능 구현
+
+> I want to get the top 5 headlines from a Korean IT news site like 'CIO Korea'. Write a function get_tech_news_headlines that uses requests and BeautifulSoup4 to scrape the main page of ciokorea.com and returns a list of the top 5 article titles.
+
+### 모든 기능 통합 및 스케줄링
+
+> Now, create the main execution logic.
+> 
+> Create a function run_daily_briefing that calls get_weather_info, get_financial_info, and get_tech_news_headlines.
+> 
+> It should combine all the returned strings into a single, well-formatted briefing message.
+> 
+> Finally, it should pass this message to the send_kakao_message function to send the alert.
+> 
+> Use the apscheduler library to schedule run_daily_briefing to execute every morning at 8:00 AM. The script should start the scheduler and keep running.
+
+---
+
+매일 아침 8시에 날씨, 금융 정보, 기술 뉴스를 카카오톡 "나에게 보내기" API를 통해 전송하는 자동화 봇입니다.
 
 ## 기능
 
