@@ -1,0 +1,9 @@
+# 카카오 API 설정
+KAKAO_REST_API_KEY=your_kakao_rest_api_key_here
+KAKAO_REDIRECT_URI=https://localhost:3000
+
+# OpenWeatherMap API 키
+OPENWEATHER_API_KEY=your_openweather_api_key_here
+
+# 도시 이름 (선택사항, 기본값: Yongin)
+CITY_NAME=Yongin
